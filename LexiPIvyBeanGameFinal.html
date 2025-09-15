@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexi P's game about Ivy + Bean Take the Case</title>
+    <style>
+        /* Buttons */
+		button {
+		  align-items: center;
+		  appearance: none;
+		  background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+		  border: 0;
+		  border-radius: 6px;
+		  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px,rgba(45, 35, 66, .3) 0 7px 13px -3px,rgba(58, 65, 111, .5) 0 -3px 0 inset;
+		  box-sizing: border-box;
+		  color: #fff;
+		  cursor: pointer;
+		  display: inline-flex;
+		  font-family: monospace;
+		  height: 48px;
+		  justify-content: center;
+		  line-height: 1;
+		  list-style: none;
+		  overflow: hidden;
+		  padding-left: 16px;
+		  padding-right: 16px;
+		  position: relative;
+		  text-align: left;
+		  text-decoration: none;
+		  transition: box-shadow .15s,transform .15s;
+		  user-select: none;
+		  -webkit-user-select: none;
+		  touch-action: manipulation;
+		  white-space: nowrap;
+		  will-change: box-shadow,transform;
+		  font-size: 18px;
+		}
+
+        
+		
+		
+		/* The Modal (background) */
+		.modal {
+		  display: none; /* Hidden by default */
+		  position: fixed; /* Stay in place */
+		  z-index: 1; /* Sit on top */
+		  left: 0;
+		  top: 0;
+		  width: 100%;
+		  height: 100%;
+		  overflow: auto; /* Enable scroll if needed */
+		  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+		}
+
+		/* Modal Content */
+		.modal-content {
+		  background-color: #fff;
+		  margin: 15% auto;
+		  padding: 20px;
+		  border: 1px solid #888;
+		  width: 400px;
+		  border-radius: 8px;
+		  position: relative;
+		}
+    </style>
+</head>
+<body>
+    <h2>Lexi P's Game of Ivy and Bean: Take the Case</h2>
+	
+	<canvas id="gameCanvas" width="1200" height="900" style="border:1px solid black">
+		Where is the canvas?
+	</canvas>
+	
+    <h2 id="playerRoll"></h2>
+	
+    <!-- Button to trigger movement -->
+    <button id="moveButton">Roll Dice</button>
+	
+	<button id="aboutButton">About this game</button>
+	
+    <!-- Some breaks so the buttons aren't covered up by the hosting tiers. -->
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	
+	
+	<!-- The Modals -->
+	<div id='numPlayersModal' class='modal'>
+	  <div class='modal-content'>
+		<h2>How many players are there?</h2>		
+		
+		<table>
+		<tr>
+			<td>
+				<input type="radio" id="rOnePlayer" name="myRadioGroup" value="1">
+				<label for="rOnePlayer">One Player</label>
+			</td>
+			<td>
+				<input type="text" id="txtPlayerOneName">
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				<input type="radio" id="rTwoPlayers" name="myRadioGroup" value="2">
+				<label for="rTwoPlayers">Two Players</label>
+			</td>
+			<td>
+				<input type="text" id="txtPlayerTwoName">
+			</td>
+		</tr>
+		
+		
+		<tr>
+			<td>
+				<input type="radio" id="rThreePlayers" name="myRadioGroup" value="3">
+				<label for="rThreePlayers">Three Players</label>
+			</td>
+			<td>
+				<input type="text" id="txtPlayerThreeName">
+			</td>
+		</tr>
+		
+		
+		<tr>
+			<td>
+				<input type="radio" id="rFourPlayers" name="myRadioGroup" value="4">
+				<label for="rFourPlayers">Four Players</label>
+			</td>
+			<td>
+				<input type="text" id="txtPlayerFourName">
+			</td>
+		</tr>
+		<tr>
+			<td align="right" colspan="2">
+				<button class='button' role='button' id='btnSelectNumPlayers'>Start Game</button>			
+			</td>
+		</tr>
+		</table>		
+		
+	  </div>
+	</div>
+	
+	<!-- The Modals -->
+	<div id='playerSetupModal' class='modal'>
+	  <div class='modal-content'>
+		<h2>How many players are there?</h2>
+		<p><div id='txtAbortCharacterPrompt'>CHARNAME</div></p>
+		  <button class='button' role='button' id='btnUsedActionYes'>Yes</button>
+		  <button class='button' role='button' id='btnUsedActionNo'>No</button>
+	  </div>
+	</div>
+	
+	<div id='winnerModal' class='modal'>
+	  <div class='modal-content'>
+		<h2 id="lblWinner">winner?</h2>		  
+		<button id="restartButton">Restart Game</button>
+	  </div>
+	</div>
+	
+	
+	
+	<div id='cheatModal' class='modal'>
+	  <div class='modal-content'>
+		<h2 id="lblWinner">Questions and Answers</h2>	
+		<div id="questionPlaceholder">Here are some questions and answers</div>
+		
+		<button id="closeCheatButton">Close</button>
+	  </div>
+	</div>
+	
+	
+	<div id='aboutModal' class='modal'>
+	  <div class='modal-content'>
+		<h2 id="creditsLbl">Credits</h2>
+		<table>
+		<tr>
+			<td>
+				Overall Design
+			</td>
+			<td>
+				Lexi
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Questions and Answers
+			</td>
+			<td>
+				Lexi
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Board Layout
+			</td>
+			<td>
+				Lexi
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Game Rules
+			</td>
+			<td>
+				Lexi
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Character Movement 
+			</td>
+			<td>
+				Dad
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Modal Displays 
+			</td>
+			<td>
+				Dad
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Graphics and Colors
+			</td>
+			<td>
+				Lexi
+			</td>
+		</tr>
+		<tr>	
+			<td>&nbsp;</td>
+			<td></td>			
+		</tr>
+		<tr>
+			<td align="left">
+				<button id="cheatButton">Show all questions and answers</button>			
+			</td>
+			<td align="right">
+				<button id="closeAboutButton">Close</button>			
+			</td>
+		</tr>
+		</table>
+	  </div>
+	</div>
+	
+	
+	<div id='questionModal' class='modal'>
+	  <div class='modal-content'>
+		<h2 id='lblQuestion'>What is your question?</h2>		
+		
+		<table>
+			<tr>
+				<td>
+					<input type="radio" id="rOption1" name="radioQuestion" value="1">
+				</td>
+				<td>
+					<label for="rOption1" id="rOption1Lbl">Option1</label>
+				</td>
+			</tr>
+			<tr>
+				<td>				
+					<input type="radio" id="rOption2" name="radioQuestion" value="2">
+				</td>
+				<td>
+					<label for="rOption2" id="rOption2Lbl">Option2</label>
+				</td>
+			</tr>
+			<tr>
+				<td>						
+					<input type="radio" id="rOption3" name="radioQuestion" value="3">
+				</td>
+				<td>
+					<label for="rOption3" id="rOption3Lbl">Option3</label>
+				</td>
+			</tr>
+			<tr>
+				<td>					
+					<input type="radio" id="rOption4" name="radioQuestion" value="4">
+				</td>
+				<td>
+					<label for="rOption4" id="rOption4Lbl">Option4</label>	
+				</td>
+			</tr>
+		</table>				
+		<br /> <br />
+		
+		<button class='button' role='button' id='btnSubmitAnswer'>Check</button>
+	  </div>
+	</div>
+	
+	
+	
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>		
+		const boardLayout = [
+			  [01, 02, 03, 04, 00, 00, 17, 18, 19, 20, 21, 22],
+			  [00, 00, 00, 05, 00, 00, 16, 00, 00, 00, 00, 23],
+			  [00, 00, 07, 06, 00, 00, 15, 00, 00, 00, 00, 24],
+			  [00, 00, 08, 00, 00, 00, 14, 00, 00, 00, 26, 25],
+			  [00, 00, 09, 10, 11, 12, 13, 00, 00, 00, 27, 00],
+			  [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 28, 00],
+			  [00, 00, 41, 40, 39, 00, 00, 00, 00, 00, 29, 00],
+			  [00, 00, 42, 00, 38, 00, 00, 00, 00, 31, 30, 00],
+			  [45, 44, 43, 00, 37, 36, 35, 34, 33, 32, 00, 00],
+			];
+		
+		const maxMoveSpaces = 6;
+		const animationDelay = 500;
+		
+		var board = document.createElement("canvas");
+		board.width = 1200;
+		board.height = 900;
+			
+		const colorPattern = [
+				'pink',			
+				'yellow',
+				'green',
+				'LightBlue',
+				'lavender',
+				'teal',
+				'turquoise',
+			    'gold',
+		        'MediumSlateBlue',
+			]
+		const squareSize = 100;
+		const playerOffset = squareSize / 2;
+		const imageSize = squareSize / 2;
+		
+		var currentQuestion = 0;
+		
+		var questions = [			
+			{ question:"What Movie did Bean and Bean's mom watch?", option1:'Seven falls', option2:'Seven trips', option3:'Seven dogs', option4:'Seven cats', answer:'1'},
+			{ question:'What did Bean do with the chair?', option1:'Play', option2:'Sit', option3:'Make it go up the stairs', option4:'Fix it', answer:'3'},
+			{ question:'What did Bean write?', option1:'Bugs', option2:'Cats', option3:'Lots of stuff', option4:'First and last name', answer:'4'},
+			{ question:"What is Bean's mystery?", option1:"What's in the house", option2:'Under the cement', option3:"What's Bean's mom's secret", option4:"What's Bean's dad's secret", answer:'2'},
+			{ question:'What is the mail man doing?', option1:'Slept', option2:'Play', option3:'Resting', option4:'reading', answer:'1'},
+			{ question:"Bean's hat was __________", option1:'Funny', option2:'Silly', option3:'Strange', option4:'Happy', answer:'3'},
+			{ question:"A __________ is stuck to the house.", option1:'Toy', option2:'Rope', option3:'Snake', option4:'Jumprope', answer:'2'},
+			{ question:"What did Ivy and Bean say when they saw something on the roof?", option1:'Yay', option2:'Cool', option3:'Hehehehehe', option4:'Mom dad', answer:'2'},
+			{ question:"What was Jake's age?", option1:'Baby', option2:'Kid', option3:'Teenager', option4:'Adult', answer:'3'},
+			{ question:"Mrs. Trantz was ______ with kids.", option1:'Happy', option2:'sad', option3:'Tiren', option4:'Mad', answer:'4'},
+			{ question:"Bean wanted to go in Dad's ________", option1:'Car', option2:'Motorcycle', option3:'Bike', option4:'Scooter', answer:'1'},
+			{ question:"Why were Ivy and Bean trying to find the culprit?", option1:'Stop the rope tying', option2:'Stop funny stuff', option3:'Stop the kids from doing bad stuff', option4:'Stop the baby sitter', answer:'1'},
+			{ question:"Why did Bean keep turning her timer?", option1:'To have fun', option2:'To stay awake', option3:'To wake up at midnight', option4:'To be funny', answer:'3'},
+			{ question:"Why did Bean trying to find the culprit", option1:'To say "good job"', option2:'To say "stop"', option3:'To say "wow"', option4:'to say "you did this"', answer:'2'},	
+			{ question:"Why did Bean think about the mystery all day?", option1:"To uncrack the case", option2:"To make stuff ", option3:"To see a dog", option4:"To be funny", answer:"1"},			
+			{ question:"Who tied the rope?", option1:"Bean", option2:"Ivy", option3:"Mom", option4:"Dad", answer:"2"},			
+			{ question:"Why did Bean move the rope? ", option1:"To make stuff", option2:"To make the rope not feel crowded", option3:"To move it to the side", option4:"To be mean", answer:"2"},			
+			{ question:"What did Dino's Dad paint?", option1:"hearts", option2:"stars", option3:"clouds", option4:"Dino", answer:"3"},			
+			{ question:"What street does Ivy and Bean live on?", option1:"Funny street", option2:"Candy street", option3:"Black out", option4:"Pancake court", answer:"4"},			
+			{ question:"Why is Bean dusting the rope off?", option1:"To be funny", option2:"To see the rope", option3:"To see the bad guy", option4:"To have fun", answer:"3"},
+		]
+		
+		
+		var playerOne = {
+			location: 1,
+			image: "IvyBean1-Sized.png",
+			playerName: "Player One",
+			xOffSet: 0,
+			yOffSet: 0,
+			isActive: false,
+		}
+		
+		var playerTwo = {
+			location: 1,
+			image: "IvyBean2-Sized.png",
+			playerName: "Player Two",
+			xOffSet: playerOffset,
+			yOffSet: 0,
+			isActive: false,
+		}
+		
+		var playerThree = {
+			location: 1,
+			image: "IvyBean3-Sized.png",
+			playerName: "Player Three",
+			xOffSet: 0,
+			yOffSet: playerOffset,
+			isActive: false,
+		}
+		
+		var playerFour = {
+			location: 1,
+			image: "IvyBean4-Sized.png",
+			playerName: "Player Four",
+			xOffSet: playerOffset,
+			yOffSet: playerOffset,
+			isActive: false,
+		}
+		
+		var currentTurn = 0;
+	
+        $(document).ready(function() {
+			buildBoard();
+			drawBoard();
+			questions = shuffleQuestions(questions);
+			
+			$('#moveButton').hide();
+			$('#numPlayersModal').show();
+			
+			//drawPlayers();
+			//updateRollText();
+		});
+		
+		function drawBoard()
+		{
+			var canvas = $('#gameCanvas')[0]; 
+			var ctx = canvas.getContext('2d');
+			
+			ctx.drawImage(board, 0, 0);
+			
+		}
+		
+		function drawPlayers()
+		{
+			var canvas = $('#gameCanvas')[0]; 
+			var ctx = canvas.getContext('2d');
+			
+			//Draw Player 
+			drawPlayer(ctx, playerOne);
+			drawPlayer(ctx, playerTwo);
+			drawPlayer(ctx, playerThree);
+			drawPlayer(ctx, playerFour);
+		}
+		
+		function drawPlayer(ctx, player)
+		{
+			if (player.isActive)
+			{
+				var [x, y] = getXYPosition(player.location);
+				var playerImage = new Image();
+				playerImage.src = player.image;
+				ctx.drawImage(playerImage, x + player.xOffSet, y + player.yOffSet, imageSize, imageSize)
+			}
+		}
+		
+		function updateRollText()
+		{
+			var player = getActivePlayer();
+			$("#moveButton").text( player.playerName + ':  Turn Time');
+		}
+		
+		//Pregenerate the board and store it in memory so we can render it quicker later on.
+		function buildBoard() 
+		{
+			var ctx = board.getContext('2d');
+			
+			for (var vert = 0; vert < boardLayout.length; vert++)
+			{
+				for (var horz = 0; horz < boardLayout[vert].length; horz++)
+				{
+					if (boardLayout[vert][horz] > 0)
+					{
+						//Draw the grid
+						//Use the path value instead of the grid value to keep the color pattern consistent
+						ctx.fillStyle = colorPattern[boardLayout[vert][horz] % colorPattern.length];
+						ctx.fillRect(horz * squareSize, vert * squareSize, squareSize, squareSize); 
+    
+					}
+				}
+			}
+			
+			
+			//Draw the graphics
+			var houses = new Image();
+			houses.src = "houses-nobg.png";
+			ctx.drawImage(houses, (5 * squareSize) + 10, (5 * squareSize) + 10, 4.5 * squareSize, 2.5 * squareSize);
+			
+			
+			var playground = new Image();
+			playground.src = "playground-nobg.png";			
+			ctx.drawImage(playground, 7 * squareSize + 10,  squareSize + 10, 3.9 * squareSize, 2.9 * squareSize);
+			
+			var grass = new Image();
+			grass.src = "grass-nobg.png";			
+			ctx.drawImage(grass, + 10,  squareSize + 10, 1.9 * squareSize, 7 * squareSize);
+			
+			var trees = new Image();
+			trees.src = "trees-nobg.png";			
+			ctx.drawImage(trees, 4 * squareSize + 10, 10, 2 * squareSize, 3.7 * squareSize);
+			
+		}
+		
+		function getEndSquare()
+		{
+			var maxValue = 0;
+			for (var vert = 0; vert < boardLayout.length; vert++)
+			{
+				for (var horz = 0; horz < boardLayout[vert].length; horz++)
+				{
+					if (boardLayout[vert][horz] > maxValue)
+					{
+						maxValue = boardLayout[vert][horz];
+					}
+				}
+			}
+			
+			return maxValue;
+		}
+		
+		function getGridPosition(squareNumber)
+		{
+			for (var vert = 0; vert < boardLayout.length; vert++)
+			{
+				for (var horz = 0; horz < boardLayout[vert].length; horz++)
+				{
+					if (boardLayout[vert][horz] == squareNumber)
+					{
+						return [horz, vert];     
+					}
+				}
+			}
+		}
+		
+		function getXYPosition(squareNumber)
+		{
+			var [x, y] = getGridPosition(squareNumber);
+			
+			return [x * squareSize, y * squareSize];
+		}
+		
+		function getActivePlayer()
+		{
+			var player = null;
+			
+			while (player == null)
+			{
+				//Maximum number of players
+				switch (currentTurn % 4)
+				{
+					case 0:
+						player = playerOne;
+						break;				
+					case 1:
+						player = playerTwo;
+						break;
+					case 2:
+						player = playerThree;
+						break;
+					case 3:
+						player = playerFour;
+						break;
+				}
+				
+				if (!player.isActive)
+				{
+					currentTurn++;
+					player = null;
+				}
+			}
+			
+			return player;
+		}
+		
+		function rollDie()
+		{
+			return Math.floor(Math.random() * maxMoveSpaces) + 1
+		}
+		
+		function shuffleQuestions(array) 
+		{
+		  var currentIndex = array.length;
+		  var randomIndex;
+
+		  // While there remain elements to shuffle
+		  while (currentIndex !== 0) {
+			// Pick a remaining element.
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex--;
+
+			// Swap it with the current element.
+			[array[currentIndex], array[randomIndex]] = [
+			  array[randomIndex],
+			  array[currentIndex],
+			];
+		  }
+
+		  return array;
+		}
+		
+		
+		function sleep(ms) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+		
+		function askQuestion()
+		{
+			//Reset the selected radio button back to the first.
+			$('input[name="radioQuestion"]:first').prop('checked', true);
+			
+			var player = getActivePlayer();
+				
+			//We could modulus it instead of doing a reset, but we want to reshuffle the questions.
+			if (currentQuestion >= questions.length)
+			{
+				currentQuestion = 0;
+				questions = shuffleQuestions(questions);
+			}
+		
+		
+			var question = questions[currentQuestion];
+			$('#lblQuestion').text(player.playerName + ': ' +question.question);
+			$('#rOption1Lbl').text(question.option1);
+			$('#rOption2Lbl').text(question.option2);
+			$('#rOption3Lbl').text(question.option3);
+			$('#rOption4Lbl').text(question.option4);
+		   
+		   
+			$('#questionModal').show();
+		}
+		
+		function answerQuestion()
+		{
+			var question = questions[currentQuestion % questions.length];
+			var answer = $('input[name="radioQuestion"]:checked').val();			
+			
+				
+			currentQuestion++;		
+			$('#questionModal').hide();
+			
+			return answer == question.answer;
+		}
+		
+		function extractQuestionAndAnswerAsTableRows(question)
+		{
+			var answer = '';
+			
+			switch (question.answer)
+			{
+				case '1':
+					answer = question.option1;
+					break;
+				case '2':
+					answer = question.option2;
+					break;
+				case '3':
+					answer = question.option3;
+					break;
+				case '4':
+					answer = question.option4;
+					break;
+				default:
+					answer = "Unknown answer";
+					break;
+			}
+		
+			return '<tr><td>Question: </td><td>' + question.question + '</td></tr>' + 
+					'<tr><td>Answer: </td><td>' + answer + '</td></tr>';
+		}
+		
+		$('#restartButton').click(function() {
+           location.reload();
+		});
+		
+		$('#aboutButton').click(function() {
+			$('#aboutModal').show();
+		});
+		
+		$('#closeAboutButton').click(function() {
+			$('#aboutModal').hide();
+		});
+		
+		$('#cheatButton').click(function() {
+			$('#cheatModal').show();			
+			$('#aboutModal').hide();
+			
+			var table = '<table>'
+			//Dynamically populate the questions and answer display
+			for (var i = 0; i < questions.length; i++)
+			{
+				table += extractQuestionAndAnswerAsTableRows(questions[i]);
+			}
+			table += '</table>';
+			
+			$('#questionPlaceholder').html(table);
+			
+			//$('#cheatModal').show();
+		});
+		
+		$('#closeCheatButton').click(function() {	
+			$('#cheatModal').hide();
+		});
+		
+		$('#btnSubmitAnswer').click(async function() {			
+			var answeredCorrectlyText = '';
+			var bonusMove = 0;
+			if (answerQuestion())
+			{
+				bonusMove = 1;
+				answeredCorrectlyText = ', and gets to move one bonus space for getting the answer right.';
+			}
+			else
+			{
+				answeredCorrectlyText = '.';
+			}
+			
+			var player = getActivePlayer();
+			
+			//each turn the player rolls 1d6
+			var spacesToMove = rollDie(); 
+			$("#playerRoll").text( player.playerName + ' rolled ' + spacesToMove + answeredCorrectlyText);
+			
+			var winningSquare = getEndSquare();
+			
+			for (var i = 0; i < spacesToMove + bonusMove; i++)
+			{
+			
+				player.location++; // += rollDie();
+				
+				//wait a bit before moving the character to the next square.
+				await sleep(animationDelay);
+				drawBoard();
+				drawPlayers();
+				
+				if (player.location >= winningSquare)
+				{
+					
+					$("#lblWinner").text( player.playerName + ' wins!');
+					$('#winnerModal').show();
+					
+					
+					return;
+					
+				}
+			}
+			
+			currentTurn++;			
+			
+			updateRollText();		
+			
+		});
+		
+		$('#btnSelectNumPlayers').click(async function() {
+			var numPlayers = $('input[name="myRadioGroup"]:checked').val();
+			
+			if (numPlayers == undefined || numPlayers < 1)
+			{
+				alert('Please select the number of players.');
+				return;
+			}
+			
+			var playerOneName = $('#txtPlayerOneName').val().trim();
+			var playerTwoName = $('#txtPlayerTwoName').val().trim();
+			var playerThreeName = $('#txtPlayerThreeName').val().trim();
+			var playerFourName = $('#txtPlayerFourName').val().trim();
+			
+			var missingPlayerNames = '';
+			
+			if (playerOneName ==  '')
+			{
+				missingPlayerNames += 'Please enter a name for player one.  ';
+			}
+			if (playerTwoName == '' && numPlayers >= 2)
+			{
+				missingPlayerNames += 'Please enter a name for player two.  ';			
+			}
+			if (playerThreeName == '' && numPlayers >= 3)
+			{
+				missingPlayerNames += 'Please enter a name for player three.  ';			
+			}
+			if (playerFourName == '' && numPlayers >= 4)
+			{
+				missingPlayerNames += 'Please enter a name for player four.  ';			
+			}
+			
+			if (missingPlayerNames != '')
+			{
+				alert (missingPlayerNames);
+			}
+			else
+			{	
+				if (numPlayers >= 4)
+				{
+					playerFour.isActive = true;
+					playerFour.playerName = playerFourName;
+				}
+				else
+				{
+					playerFour.isActive = false;
+				}
+				
+				if (numPlayers >= 3)
+				{
+					playerThree.isActive = true;
+					playerThree.playerName = playerThreeName;
+				}
+				else
+				{
+					playerThree.isActive = false;
+				}
+				
+				if (numPlayers >= 2)
+				{
+					playerTwo.isActive = true;
+					playerTwo.playerName = playerTwoName;
+				}
+				else
+				{
+					playerTwo.isActive = false;
+				}
+				
+				playerOne.isActive = true;
+				playerOne.playerName = playerOneName;
+			
+				$('#moveButton').show();
+				
+				
+				updateRollText();
+				drawPlayers();
+				
+				$('#numPlayersModal').hide();
+				
+			}
+		});
+			
+		$('#moveButton').click(async function() {
+           
+			// Disable the button to avoid shenanigans with multiple clicks
+			$(this).prop('disabled', true);    
+
+			askQuestion();			
+			
+				
+			
+			// Re-Enable the button
+			$('#moveButton').prop('disabled', false);  
+		});
+    </script>
+</body>
+</html>
