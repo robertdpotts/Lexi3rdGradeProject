@@ -435,6 +435,25 @@
 			drawPlayer(ctx, playerTwo);
 			drawPlayer(ctx, playerThree);
 			drawPlayer(ctx, playerFour);
+			
+		
+			//Draw the graphics
+			var houses = new Image();
+			houses.src = "houses-nobg.png";
+			ctx.drawImage(houses, (5 * squareSize) + 10, (5 * squareSize) + 10, 4.5 * squareSize, 2.5 * squareSize);
+			
+			
+			var playground = new Image();
+			playground.src = "playground-nobg.png";			
+			ctx.drawImage(playground, 7 * squareSize + 10,  squareSize + 10, 3.9 * squareSize, 2.9 * squareSize);
+			
+			var grass = new Image();
+			grass.src = "grass-nobg.png";			
+			ctx.drawImage(grass, + 10,  squareSize + 10, 1.9 * squareSize, 7 * squareSize);
+			
+			var trees = new Image();
+			trees.src = "trees-nobg.png";			
+			ctx.drawImage(trees, 4 * squareSize + 10, 10, 2 * squareSize, 3.7 * squareSize);
 		}
 		
 		function drawPlayer(ctx, player)
@@ -841,5 +860,4 @@
 		});
     </script>
 </body>
-
 </html>
